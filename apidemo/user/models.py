@@ -23,24 +23,24 @@ class ProviderManager(BaseUserManager):
         if User.objects.filter(email=self.normalize_email(email)).exists():
             raise ValueError('Duplicate email')
 
-        if User.objects.filter(phone_number=phone).exists():
+        if User.objects.filter(contact=contact).exists():
             raise ValueError('Duplicate phone number')
 
         user = self.model(
             email = self.normalize_email(email),
             name=name,
             contact=contact,
-            user_type = user_type,
+            user_type=user_type,
             company=company,
             **kwargs
         )
 
 
 class RequesterManager(BaseUserManager):
-    def create_user(self, name, email, phone, center, password=None, **kwargs):
-        phone = PhoneNumber.from_string(
-            phone_number=phone, region='KR').as_e164
-        job = JobType.objects.get(name='medical_staff')
+    def create_user(self, name, email, contact, company, password=None, **kwargs):
+        contact = PhoneNumber.from_string(
+            phone_number=contact, region='KR').as_e164
+        user_type = UserType.objects.get(name='medical_staff')
 
         if not name:
             raise ValueError('User must have an name')
@@ -48,18 +48,15 @@ class RequesterManager(BaseUserManager):
         if User.objects.filter(email=self.normalize_email(email)).exists():
             raise ValueError('Duplicate email')
 
-        if User.objects.filter(phone_number=phone).exists():
+        if User.objects.filter(contact=contact).exists():
             raise ValueError('Duplicate phone number')
-
-        if self.filter(center=center).exists():
-            raise ValueError('Duplicate Center')
 
         user = self.model(
             email = self.normalize_email(email),
             name=name,
-            phone_number=phone,
-            jobtype = job,
-            center=center,
+            contact=contact,
+            user_type=user_type,
+            company=company,
             **kwargs
         )
 
@@ -72,10 +69,20 @@ class UserType(models.Model):
         db_table = 'user_types'
 
 
+class CompanyCategory(models.Model):
+    name = models.CharField(max_length=100, null=True)
+
+    class Meta:
+        db_table = 'company_categories'
+
+
 class Company(models.Model):
     name = models.CharField(max_length=50, null=True)
+    company_category = models.ForeignKey(CompanyCategory, on_delete=models.SET_NULL, null=True, default=None)
     address = models.CharField(max_length=100, null=True)
-    telephone = models.CharField(max_length=50, null=True)
+    contact = models.CharField(max_length=50, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
 
     class Meta:
         db_table = 'companies'
@@ -96,7 +103,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     birth_date = models.DateField(null=True, default=None)
     gender = models.ForeignKey(Gender, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    is_active = models.BooleanField(default=False, null=True)
 
     objects = UserManager()
     child_tables = InheritanceManager()
@@ -112,6 +118,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Requester(User, PermissionsMixin):
     company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True)
+    is_active = models.BooleanField(default=True)
     
     objects = RequesterManager()
 
@@ -127,6 +134,7 @@ class Requester(User, PermissionsMixin):
 
 class Provider(User, PermissionsMixin):
     company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True)
+    is_active = models.BooleanField(default=True)
 
     objects = ProviderManager()
 
