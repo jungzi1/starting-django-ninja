@@ -78,7 +78,7 @@ class Company(models.Model):
     telephone = models.CharField(max_length=50, null=True)
 
     class Meta:
-        db_table = 'centers'
+        db_table = 'companies'
 
 
 class Gender(models.Model):
@@ -89,14 +89,13 @@ class Gender(models.Model):
         
         
 class User(AbstractBaseUser, PermissionsMixin):
+    user_type = models.ForeignKey(UserType, on_delete=models.SET_NULL, null=True, default=None)
     email = models.EmailField(unique=True, null=True, default=None)
     name = models.CharField(max_length=20, null=True)
     contact = PhoneNumberField(null=True, default=None)
     birth_date = models.DateField(null=True, default=None)
     gender = models.ForeignKey(Gender, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    user_type = models.ForeignKey(UserType, on_delete=models.SET_NULL, null=True, default=None)
-    fcm_token = models.TextField(null=True, default=None)
     is_active = models.BooleanField(default=False, null=True)
 
     objects = UserManager()
@@ -120,7 +119,7 @@ class Requester(User, PermissionsMixin):
     REQUIRED_FIELDS = ['company']
 
     class Meta:
-        db_table = 'medical_staffs'
+        db_table = 'requesters'
 
     def __str__(self):
         return self.name
@@ -132,10 +131,10 @@ class Provider(User, PermissionsMixin):
     objects = ProviderManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['phone_number', 'center']
+    REQUIRED_FIELDS = ['company']
 
     class Meta:
-        db_table = 'medical_staffs'
+        db_table = 'providers'
 
     def __str__(self):
         return self.name
