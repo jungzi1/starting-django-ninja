@@ -21,12 +21,14 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     # 'django.contrib.admin',
-    # 'django.contrib.auth',
+    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders'
+    'corsheaders',
+    'user',
+    'phonenumber_field'
 ]
 
 MIDDLEWARE = [
@@ -34,10 +36,10 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
-    # 'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware', 
 ]
 
 ROOT_URLCONF = 'apidemo.urls'
@@ -85,13 +87,19 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Auth model
+AUTH_USER_MODEL = 'user.User'
+
+AUTHENTICATION_BACKENDS = [
+    'user.backend.ModelBackend',
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
