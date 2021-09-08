@@ -1,4 +1,5 @@
-from django.urls import path
+from django.urls import path, include
+from django.urls.resolvers import URLPattern
 from ninja import NinjaAPI
 
 api = NinjaAPI()
@@ -9,6 +10,7 @@ def add(request, a: int, b: int):
     return {"result": a + b}
 
 
-urlpatterns = [
-    path("api/", api.urls),
+ninja_url = [
+]
+urlpatterns=[
 ]
