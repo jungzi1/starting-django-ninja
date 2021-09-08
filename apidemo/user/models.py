@@ -15,7 +15,7 @@ class ProviderManager(BaseUserManager):
     def create_user(self, name, email, contact, company, password=None, **kwargs):
         contact = PhoneNumber.from_string(
             phone_number=contact, region='KR').as_e164
-        user_type = UserType.objects.get(name='medical_staff')
+        user_type = UserType.objects.get(name='provider')
 
         if not name:
             raise ValueError('User must have an name')
@@ -40,7 +40,7 @@ class RequesterManager(BaseUserManager):
     def create_user(self, name, email, contact, company, password=None, **kwargs):
         contact = PhoneNumber.from_string(
             phone_number=contact, region='KR').as_e164
-        user_type = UserType.objects.get(name='medical_staff')
+        user_type = UserType.objects.get(name='requester')
 
         if not name:
             raise ValueError('User must have an name')
