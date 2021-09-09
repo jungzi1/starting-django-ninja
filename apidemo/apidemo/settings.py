@@ -29,7 +29,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'user',
     'service',
-    'phonenumber_field'
+    'phonenumber_field',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [

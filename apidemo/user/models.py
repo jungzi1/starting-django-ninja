@@ -12,10 +12,10 @@ from django.contrib.auth.models import (
 )
 
 class ProviderManager(BaseUserManager):
-    def create_user(self, name, email, contact, company, password=None, **kwargs):
+    def create_user(self, name, email, contact, company, user_type, password=None, **kwargs):
         contact = PhoneNumber.from_string(
             phone_number=contact, region='KR').as_e164
-        user_type = UserType.objects.get(name='provider')
+        user_type = UserType.objects.get(name=user_type)
 
         if not name:
             raise ValueError('User must have an name')
@@ -34,13 +34,16 @@ class ProviderManager(BaseUserManager):
             company=company,
             **kwargs
         )
+
+        user.set_password(password)
+        user.save(using=self._db)
 
 
 class RequesterManager(BaseUserManager):
-    def create_user(self, name, email, contact, company, password=None, **kwargs):
+    def create_user(self, name, email, contact, company, user_type, password=None, **kwargs):
         contact = PhoneNumber.from_string(
             phone_number=contact, region='KR').as_e164
-        user_type = UserType.objects.get(name='requester')
+        user_type = UserType.objects.get(name=user_type)
 
         if not name:
             raise ValueError('User must have an name')
@@ -60,6 +63,8 @@ class RequesterManager(BaseUserManager):
             **kwargs
         )
 
+        user.set_password(password)
+        user.save(using=self._db)
 
 
 class UserType(models.Model):

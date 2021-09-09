@@ -2,7 +2,6 @@ from django.db import models
 from django.db.models.fields import URLField
 
 from user.models import (
-    User,
     Company,
     Requester,
     Provider
@@ -10,7 +9,7 @@ from user.models import (
 
 class ServiceCategory(models.Model):
     name = models.CharField(max_length=100, null=False)
-    icon_url = URLField(max_length=2000)
+    icon_url = URLField(max_length=2000, null=True, default=None)
 
     class Meta:
         db_table = 'service_categories'
@@ -19,7 +18,7 @@ class ServiceCategory(models.Model):
 class Service(models.Model):
     category = models.ForeignKey(ServiceCategory, on_delete=models.SET_NULL, null=True, default=None)
     name = models.CharField(max_length=100, null=False)
-    icon_url = URLField(max_length=2000)
+    icon_url = URLField(max_length=2000, null=True, default=None)
     
     class Meta:
         db_table = 'services'   
