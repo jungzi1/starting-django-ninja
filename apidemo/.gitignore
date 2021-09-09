@@ -398,3 +398,6 @@ tags
 
 ### my_settings.py ###
 my_settings.py
+
+#django-seed
+management/
